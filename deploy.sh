@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ubuntu/git-action-test
+REPOSITORY=/home/dwadmin/cicd
 cd $REPOSITORY
 
 APP_NAME=demo
