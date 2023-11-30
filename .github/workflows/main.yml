@@ -29,25 +29,23 @@ jobs:
           name: cicdsample
           path: build/libs/*.jar
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
+      # 추가
+      - name: Make zip file #1
+        run: zip -qq -r ./$GITHUB_SHA.zip .
+        shell: bash
+
+      - name: Configure AWS credentials #2
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          name: cicdsample
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Add remote server to known hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-      - name: SCP transfer
-        run: scp *.jar ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/home/dwadmin/cicd
-      - name: Execute remote commands
-        run: |
-          ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo fuser -k 8080/tcp || true"
-          ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo nohup java -jar /home/dwadmin/cicd/*SNAPSHOT.jar  > /home/dwadmin/cicd/nohup.log 2>&1 &"
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Upload to S3 #3
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://dw-bucket-test1234/$GITHUB_SHA.zip
+
+      - name: Code Deploy #4
+        run: aws deploy create-deployment --application-name dw-codedeploy-app
+          --deployment-config-name CodeDeployDefault.OneAtATime
+          --deployment-group-name dw-deploy-group
+          --s3-location bucket=dw-bucket-test1234,bundleType=zip,key=$GITHUB_SHA.zip
