@@ -48,4 +48,5 @@ jobs:
         run: aws deploy create-deployment --application-name dw-codedeploy-app
           --deployment-config-name CodeDeployDefault.OneAtATime
           --deployment-group-name dw-deploy-group
+          --ignore-application-stop-failures
           --s3-location bucket=dw-bucket-test1234,bundleType=zip,key=$GITHUB_SHA.zip
