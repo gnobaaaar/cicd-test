@@ -46,6 +46,6 @@ jobs:
 
 
       - name: Code Deploy #4
-        run: aws deploy create-deployment --application-name dw-codedeploy-app --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name dw-deploy-group --s3-location bucket=dw-bucket-test1234,bundleType=zip,key=$GITHUB_SHA.zip
-
+#        run: aws deploy create-deployment --application-name dw-codedeploy-app --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name dw-deploy-group --s3-location bucket=dw-bucket-test1234,bundleType=zip,key=$GITHUB_SHA.zip
+        run: aws deploy create-deployment --application-name dw-codedeploy-app --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name dw-auto-group --s3-location bucket=dw-bucket-test1234,bundleType=zip,key=$GITHUB_SHA.zip
 
