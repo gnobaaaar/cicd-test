@@ -22,6 +22,6 @@ else
 fi
 
 echo "> $JAR_PATH 배포"
-nohup java -jar $JAR_PATH > /dev/null 2> /dev/null < /dev/null &
+nohup java -jar $JAR_PATH > /home/dwadmin/cicd/nohup.log 2>&1 &
 #nohup java -jar /home/dwadmin/cicd/*SNAPSHOT.jar  > /home/dwadmin/cicd/nohup.log 2>&1 &
 #nohup java -jar /home/ec2-user/app/build/libs/curriculum-1.0.jar --spring.config.location=/home/ec2-user/application.yml > /dev/null 2> /dev/null < /dev/null &
